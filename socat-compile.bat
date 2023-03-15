@@ -7,6 +7,7 @@ REM --- https://github.com/valorisa/socat-1.7.4.4_for_Windows
  
 SETLOCAL
 
+SET SETUP_URL=https://cygwin.com/setup-x86_64.exe 
 SET SCRIPTDIR=%CD%
 SET TEMPDIR=I:\Tmp
 
@@ -19,7 +20,7 @@ cd /d %TEMPDIR%
 REM -- Download the Cygwin installer
 IF NOT EXIST cygwin-setup64.exe (
 	ECHO cygwin-setup64.exe NOT found! Downloading installer...
-	bitsadmin /transfer cygwinDownloadJob /download /priority normal https://cygwin.com/setup-x86_64.exe %CD%\\cygwin-setup64.exe
+	bitsadmin /transfer cygwinDownloadJob /download /priority foreground %SETUP_URL% %CD%\\cygwin-setup64.exe
 ) ELSE (
 	ECHO cygwin-setup64.exe found! Skipping installer download...
 )
@@ -79,7 +80,7 @@ CD %ROOTDIR%
 REM -- Download socat
 IF NOT EXIST %SOCAT:~0%.tar.gz (
 	ECHO %SOCAT:~0%.tar.gz NOT found! Downloading Socat...
-	bitsadmin /transfer socatDownloadJob /download /priority normal "http://www.dest-unreach.org/socat/download/%SOCAT:~0%.tar.gz" "%CD%\%SOCAT:~0%.tar.gz"
+	bitsadmin /transfer socatDownloadJob /download /priority foreground "http://www.dest-unreach.org/socat/download/%SOCAT:~0%.tar.gz" "%CD%\%SOCAT:~0%.tar.gz"
 ) ELSE (
 	ECHO %SOCAT:~0%.tar.gz found! Skipping socat download...
 )
