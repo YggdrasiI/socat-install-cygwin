@@ -4,17 +4,34 @@ REM -- Sources:
 REM --- https://github.com/rtwolf/cygwin-auto-install
 REM --- https://gist.github.com/wjrogers/1016065
 REM --- https://github.com/valorisa/socat-1.7.4.4_for_Windows
-
+ 
 SETLOCAL
 
-REM Note about cywin version:
-REM 25.11.2022 — Cygwin 3.3.6 is the final version supporting x86 (32-bit) > Windows, and the forthcoming Cygwin 3.4 will be released for x86_64 only.
-REM Run setup with --allow-unsupported-windows --site circa_URL
+REM -- Note about cywin version:
+REM --- 25.11.2022 — Cygwin 3.3.6 is the final version supporting x86 (32-bit) > Windows, and the forthcoming Cygwin 3.4 will be released for x86_64 only.
+REM --- Run setup with --allow-unsupported-windows --site circa_URL
 SET CIRCA_URL=http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/circa/2022/11/23/063457
-SET SETUP_URL=https://cygwin.com/setup-x86.exe
 
+REM -- Default settings
+SET SETUP_URL=https://cygwin.com/setup-x86.exe
 SET SCRIPTDIR=%CD%
-SET TEMPDIR=I:\Tmp
+SET TEMPDIR=C:\Tmp
+
+REM --- Configure our paths
+SET SITE=http://ucmirror.canterbury.ac.nz/cygwin
+SET LOCALDIR=%CD%
+SET ROOTDIR=C:\cygwin32
+SET CYGWINROOTDIR=\
+SET SOCAT=socat-1.7.4.4
+
+REM --- These are the packages we will install to compile socat (in addition to the default packages)
+SET PACKAGES=wget,gcc-g++,gcc-core,make,gcc-fortran,gcc-objc,gcc-objc++,libkrb5-devel,libkrb5_3,libreadline-devel,libssl-devel,libwrap-devel,tcp_wrappers
+ 
+
+REM -- Read local settings
+IF EXIST "%SCRIPTDIR%\settings32.bat" (
+call %SCRIPTDIR%\settings32.bat
+)
 
 REM -- change to C:\Temp 
 if NOT EXIST %TEMPDIR% (
@@ -30,25 +47,13 @@ IF NOT EXIST cygwin-setup32.exe (
 	ECHO cygwin-setup32.exe found! Skipping installer download...
 )
  
-REM -- Configure our paths
-SET SITE=http://ucmirror.canterbury.ac.nz/cygwin
-SET LOCALDIR=%CD%
-SET ROOTDIR=I:\Cygwin\cygwin32
-SET CYGWINROOTDIR=\
-SET SOCAT=socat-1.7.4.4
-SET SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS=crypto-1.1 ncursesw-10 readline7 ssl-1.1 win1 wrap-0 z
-
- 
-REM -- These are the packages we will install to compile socat (in addition to the default packages)
-SET PACKAGES=wget,gcc-g++,gcc-core,make,gcc-fortran,gcc-objc,gcc-objc++,libkrb5-devel,libkrb5_3,libreadline-devel,libssl-devel,libwrap-devel,tcp_wrappers
  
 
 IF NOT EXIST "%ROOTDIR%\bin\bash.exe" (
 	REM -- More info on command line options at: https://cygwin.com/faq/faq.html#faq.setup.cli
 	REM -- Do it!
 	ECHO *** INSTALLING DEFAULT PACKAGES
-	call cygwin-setup32 --quiet-mode --no-desktop --download --local-install --no-verify -s %SITE% -l "%LOCALDIR%" -R "%ROOTDIR%" --allow-unsupported-windows --site %CIRCA_URL%
-
+	call cygwin-setup32 --quiet-mode --no-desktop --download --local-install --no-verify -s %SITE% -l "%LOCALDIR%" -R "%ROOTDIR%"
 	ECHO.
 	ECHO Please wait with continuation until cygwin setup completes.
 	pause
@@ -62,7 +67,7 @@ IF NOT EXIST "%ROOTDIR%\lib\libwrap.dll.a" (
 
 	ECHO.
 	ECHO *** INSTALLING CUSTOM PACKAGES
-	call cygwin-setup32 -q -d -D -L -X -s %SITE% -l "%LOCALDIR%" -R "%ROOTDIR%" -P %PACKAGES% --allow-unsupported-windows --site %CIRCA_URL%
+	call cygwin-setup32 -q -d -D -L -X -s %SITE% -l "%LOCALDIR%" -R "%ROOTDIR%" -P %PACKAGES%
 
 	REM -- Show what we did
 	ECHO.
@@ -107,3 +112,4 @@ REM -- test Socat
 
 PAUSE
 EXIT /B 0
+

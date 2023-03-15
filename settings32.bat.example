@@ -1,0 +1,3 @@
+REM Overwrite own settings settings, e.g.
+REM SET TEMPDIR=C:\Tmp
+REM SET ROOTDIR=C:\cygwin32

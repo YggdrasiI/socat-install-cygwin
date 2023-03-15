@@ -7,9 +7,26 @@ REM --- https://github.com/valorisa/socat-1.7.4.4_for_Windows
  
 SETLOCAL
 
+REM -- Default settings
 SET SETUP_URL=https://cygwin.com/setup-x86_64.exe 
 SET SCRIPTDIR=%CD%
-SET TEMPDIR=I:\Tmp
+SET TEMPDIR=C:\Tmp
+
+REM --- Configure our paths
+SET SITE=http://ucmirror.canterbury.ac.nz/cygwin
+SET LOCALDIR=%CD%
+SET ROOTDIR=C:\cygwin64
+SET CYGWINROOTDIR=\
+SET SOCAT=socat-1.7.4.4
+
+REM --- These are the packages we will install to compile socat (in addition to the default packages)
+SET PACKAGES=wget,gcc-g++,gcc-core,make,gcc-fortran,gcc-objc,gcc-objc++,libkrb5-devel,libkrb5_3,libreadline-devel,libssl-devel,libwrap-devel,tcp_wrappers
+ 
+
+REM -- Read local settings
+IF EXIST "%SCRIPTDIR%\settings.bat" (
+call %SCRIPTDIR%\settings.bat
+)
 
 REM -- change to C:\Temp 
 if NOT EXIST %TEMPDIR% (
@@ -25,17 +42,6 @@ IF NOT EXIST cygwin-setup64.exe (
 	ECHO cygwin-setup64.exe found! Skipping installer download...
 )
  
-REM -- Configure our paths
-SET SITE=http://ucmirror.canterbury.ac.nz/cygwin
-SET LOCALDIR=%CD%
-SET ROOTDIR=I:\Cygwin\cygwin64
-SET CYGWINROOTDIR=\
-SET SOCAT=socat-1.7.4.4
-SET SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS=crypto-1.1 ncursesw-10 readline7 ssl-1.1 win1 wrap-0 z
-
- 
-REM -- These are the packages we will install to compile socat (in addition to the default packages)
-SET PACKAGES=wget,gcc-g++,gcc-core,make,gcc-fortran,gcc-objc,gcc-objc++,libkrb5-devel,libkrb5_3,libreadline-devel,libssl-devel,libwrap-devel,tcp_wrappers
  
 
 IF NOT EXIST "%ROOTDIR%\bin\bash.exe" (
