@@ -11,6 +11,11 @@ test -z "${SOCAT_DIR}" && SOCAT_DIR="${OLDER_SOCAT_DIR}"
 
 SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS="crypto-1.1 ncursesw-10 readline7 ssl-1.1 win1 wrap-0 z"
 
+if [ "i686" = "$(uname -m)" ] ; then
+	# Add extra dependeny for 32 bit version
+	SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS="$SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS gcc_s-1"
+fi
+
 # Extracting source files
 echo "Tar file: $SOCAT_TAR"
 if [ ! -f "$SOCAT_TAR" -a ! -d "$SOCAT_DIR" ] ; then
@@ -46,6 +51,6 @@ echo "Build release"
 mkdir -p release
 cp -u socat.exe release/.
 for LIBNAME in $SOCAT_REQUIRED_CYGWIN_RUNTIME_LIBS ; do 
-	# echo "$LIBNAME"
+	echo "Copy $LIBNAME"
 	cp -u "/bin/cyg${LIBNAME}.dll" "release/."
 done
